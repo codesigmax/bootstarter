@@ -31,3 +31,12 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# MacOS
+**/.DS_Store
+
+# env
+**/application-local.yaml
+**/application-dev.yaml
+**/application-test.yaml
+**/applicaiton-prod.yaml
