@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/bootstarter?useSSL=false&serverTimezone=UTC
+    username: postgres
+    password: postgres
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: method
+
+# jjwt自定义配置
+jwt:
+  secret: ${JWT_SECRET:} # 实际部署替换环境变量
+  expiration:
+    refresh-token: 86400000 # 24小时 (604800000  # 7天)
+    access-token: 900000 # 15分钟
+
+# 日志配置
+logging:
+  level:
+    com.qfleaf: debug
