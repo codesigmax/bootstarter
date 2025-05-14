@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: bootstarter
+  profiles:
+    active: local
+
+# MyBatis-Plus 配置
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 控制台打印 SQL
+    map-underscore-to-camel-case: true  # 下划线转驼峰
+    default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
+  global-config:
+    db-config:
+      id-type: ASSIGN_ID  # 使用雪花ID（默认实现）
+      logic-delete-field: deleteTime  # 逻辑删除字段（可选）
+      logic-not-delete-value: 'NULL'  # 逻辑未删除值（可选）
+      logic-delete-value: 'CURRENT_TIMESTAMP'  # 逻辑删除值（可选）
+      table-underline: true  # 表名下划线（可选）
