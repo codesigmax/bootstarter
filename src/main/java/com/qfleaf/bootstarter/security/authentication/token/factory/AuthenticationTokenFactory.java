@@ -4,9 +4,7 @@ import com.qfleaf.bootstarter.security.authentication.token.EmailCodeAuthenticat
 import com.qfleaf.bootstarter.security.authentication.token.PasswordAuthenticationToken;
 import com.qfleaf.bootstarter.security.authentication.token.SmsCodeAuthenticationToken;
 import com.qfleaf.bootstarter.security.request.UnifiedLoginRequest;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
