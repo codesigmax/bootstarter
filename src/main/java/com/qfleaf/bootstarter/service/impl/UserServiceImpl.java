@@ -12,6 +12,9 @@ import com.qfleaf.bootstarter.model.converter.UserConverter;
 import com.qfleaf.bootstarter.model.enums.UserStatus;
 import com.qfleaf.bootstarter.model.request.RegisterRequest;
 import com.qfleaf.bootstarter.model.request.admin.user.UserCreateRequest;
+import com.qfleaf.bootstarter.model.request.admin.user.UserPageRequest;
+import com.qfleaf.bootstarter.model.response.PageResponse;
+import com.qfleaf.bootstarter.model.response.admin.user.UserPageResponse;
 import com.qfleaf.bootstarter.security.authentication.token.factory.AuthenticationTokenFactory;
 import com.qfleaf.bootstarter.security.request.UnifiedLoginRequest;
 import com.qfleaf.bootstarter.security.response.TokenLoginResponse;
@@ -76,7 +79,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         List<Role> roles = roleDao.findAllByUserId(id);
         roles.forEach(role -> {
             if (role.getCode().equals("ROLE_ADMIN")) {
-                throw new BusinessException(ResultCode.FORBIDDEN.getCode(), "不能禁用管理员");
+                throw new BusinessException(ResultCode.FORBIDDEN.getCode(), "无法禁用管理员");
             }
         });
         User user = userDao.findById(id);
@@ -85,5 +88,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         user.setStatus(UserStatus.BLOCKED);
         return userDao.update(user);
+    }
+
+    @Override
+    public PageResponse<UserPageResponse> mPage(UserPageRequest userPageRequest) {
+        return userDao.mPage(userPageRequest);
     }
 }

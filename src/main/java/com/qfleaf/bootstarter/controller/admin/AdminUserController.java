@@ -2,6 +2,9 @@ package com.qfleaf.bootstarter.controller.admin;
 
 import com.qfleaf.bootstarter.common.ApiResponse;
 import com.qfleaf.bootstarter.model.request.admin.user.UserCreateRequest;
+import com.qfleaf.bootstarter.model.request.admin.user.UserPageRequest;
+import com.qfleaf.bootstarter.model.response.PageResponse;
+import com.qfleaf.bootstarter.model.response.admin.user.UserPageResponse;
 import com.qfleaf.bootstarter.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,6 +19,13 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AdminUserController {
     private final UserService userService;
+
+    @Operation(summary = "查询用户列表")
+    @GetMapping("/list")
+    public ApiResponse<PageResponse<UserPageResponse>> list(UserPageRequest userPageRequest) {
+        PageResponse<UserPageResponse> pageResponse = userService.mPage(userPageRequest);
+        return ApiResponse.success(pageResponse);
+    }
 
     @Operation(summary = "创建用户")
     @PostMapping

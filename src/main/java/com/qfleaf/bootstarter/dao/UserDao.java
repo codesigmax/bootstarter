@@ -1,6 +1,8 @@
 package com.qfleaf.bootstarter.dao;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.qfleaf.bootstarter.dao.mapper.PermissionMapper;
 import com.qfleaf.bootstarter.dao.mapper.RoleMapper;
 import com.qfleaf.bootstarter.dao.mapper.UserMapper;
@@ -8,6 +10,9 @@ import com.qfleaf.bootstarter.model.Permission;
 import com.qfleaf.bootstarter.model.Role;
 import com.qfleaf.bootstarter.model.User;
 import com.qfleaf.bootstarter.model.request.RegisterRequest;
+import com.qfleaf.bootstarter.model.request.admin.user.UserPageRequest;
+import com.qfleaf.bootstarter.model.response.PageResponse;
+import com.qfleaf.bootstarter.model.response.admin.user.UserPageResponse;
 import com.qfleaf.bootstarter.security.jwt.JwtTokenProvider;
 import com.qfleaf.bootstarter.security.response.TokenLoginResponse;
 import lombok.Getter;
@@ -16,6 +21,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +39,23 @@ public class UserDao {
 
     private static final String loginTokenCacheKeyPrefix = "login:token:";
     private final JwtTokenProvider jwtTokenProvider;
+
+    public PageResponse<UserPageResponse> mPage(UserPageRequest request) {
+        IPage<UserPageResponse> page = new PageDTO<>(request.getCurrent(), request.getSize());
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        wrapper
+                .like(StringUtils.hasText(request.getUsername()), User::getUsername, request.getUsername())
+                .like(StringUtils.hasText(request.getEmail()), User::getEmail, request.getEmail())
+                .like(StringUtils.hasText(request.getPhone()), User::getPhone, request.getPhone())
+                .eq(request.getStatus() != null, User::getStatus, request.getStatus());
+        IPage<UserPageResponse> pageResult = userMapper.selectPageVo(page, wrapper);
+        return PageResponse.<UserPageResponse>builder()
+                .records(pageResult.getRecords())
+                .total(pageResult.getTotal())
+                .page(pageResult.getCurrent())
+                .size(pageResult.getSize())
+                .build();
+    }
 
     @Getter
     @RequiredArgsConstructor
