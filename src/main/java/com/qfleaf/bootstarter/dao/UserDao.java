@@ -83,6 +83,10 @@ public class UserDao {
         return userCache.opsForValue().get(loginTokenCacheKeyPrefix + jwt);
     }
 
+    public boolean expireToken(String token) {
+        return userCache.delete(loginTokenCacheKeyPrefix + token);
+    }
+
     // region exist
     public ExistType exist(RegisterRequest register) {
         return existByUsername(register.getUsername()) ?

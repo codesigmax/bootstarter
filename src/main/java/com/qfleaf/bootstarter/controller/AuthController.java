@@ -9,10 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -33,5 +30,12 @@ public class AuthController {
     public ApiResponse<TokenLoginResponse> login(@Valid @RequestBody UnifiedLoginRequest loginRequest) {
         TokenLoginResponse login = userService.login(loginRequest);
         return ApiResponse.success(login);
+    }
+
+    @Operation(summary = "用户登出")
+    @PostMapping("/logout")
+    public ApiResponse<Boolean> logout(@RequestHeader("Authorization") String token) {
+        boolean logout = userService.logout(token);
+        return ApiResponse.success(logout);
     }
 }

@@ -44,4 +44,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // jwt存储到redis
         return userDao.cacheToken(principal);
     }
+
+    @Override
+    public boolean logout(String token) {
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+            return userDao.expireToken(token);
+        }
+        throw new BusinessException(ResultCode.UNAUTHORIZED.getCode(), "用户未登陆");
+    }
 }

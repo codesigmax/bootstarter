@@ -10,4 +10,6 @@ public interface UserService extends IService<User> {
     boolean register(RegisterRequest registerRequest);
 
     TokenLoginResponse login(UnifiedLoginRequest unifiedLoginRequest);
+
+    boolean logout(String token);
 }
