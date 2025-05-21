@@ -12,6 +12,6 @@ public class CacheLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        redisTemplate.opsForHash().put("globalConfig", "defaultUserRole", "1");
+        redisTemplate.opsForHash().put("globalConfig", "defaultUserRole", "2");
     }
 }
