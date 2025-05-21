@@ -9,6 +9,7 @@ import com.qfleaf.bootstarter.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class AdminUserController {
 
     @Operation(summary = "查询用户列表")
     @GetMapping("/list")
-    public ApiResponse<PageResponse<UserPageResponse>> list(UserPageRequest userPageRequest) {
+    public ApiResponse<PageResponse<UserPageResponse>> list(@ParameterObject UserPageRequest userPageRequest) {
         PageResponse<UserPageResponse> pageResponse = userService.mPage(userPageRequest);
         return ApiResponse.success(pageResponse);
     }
