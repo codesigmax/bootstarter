@@ -1,8 +1,11 @@
 package com.qfleaf.bootstarter.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qfleaf.bootstarter.dao.UserDao;
+import com.qfleaf.bootstarter.security.filter.JwtAuthFilter;
 import com.qfleaf.bootstarter.security.handler.UnifiedAccessDeniedHandler;
 import com.qfleaf.bootstarter.security.handler.UnifiedAuthenticationEntryPoint;
+import com.qfleaf.bootstarter.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +18,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.List;
 
@@ -24,7 +28,7 @@ import java.util.List;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, ObjectMapper objectMapper) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, ObjectMapper objectMapper, JwtTokenProvider jwtTokenProvider, UserDao userDao) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
@@ -48,7 +52,8 @@ public class SecurityConfig {
                             config.authenticationEntryPoint(new UnifiedAuthenticationEntryPoint(objectMapper));
                             config.accessDeniedHandler(new UnifiedAccessDeniedHandler(objectMapper));
                         }
-                );
+                )
+                .addFilterBefore(new JwtAuthFilter(jwtTokenProvider, userDao), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

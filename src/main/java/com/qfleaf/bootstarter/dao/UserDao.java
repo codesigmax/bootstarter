@@ -79,6 +79,10 @@ public class UserDao {
                 .build();
     }
 
+    public UserDetails loadUserFromCache(String jwt) {
+        return userCache.opsForValue().get(loginTokenCacheKeyPrefix + jwt);
+    }
+
     // region exist
     public ExistType exist(RegisterRequest register) {
         return existByUsername(register.getUsername()) ?
