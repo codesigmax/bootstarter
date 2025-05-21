@@ -1,7 +1,10 @@
 package com.qfleaf.bootstarter.security.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.qfleaf.bootstarter.model.enums.UserStatus;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,9 +14,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Data
+@NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SystemUserDetails implements UserDetails {
     private String username;
     private String password;
+    private Set<String> permissions;
+    @JsonIgnore
     private Set<? extends GrantedAuthority> authorities;
     private UserStatus userStatus;
     // 认证通过后才添加
@@ -22,6 +29,7 @@ public class SystemUserDetails implements UserDetails {
     public SystemUserDetails(String username, String password, Collection<String> authorities, UserStatus userStatus) {
         this.username = username;
         this.password = password;
+        permissions = (Set<String>) authorities;
         this.authorities = authorities.stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toSet());
@@ -68,6 +76,11 @@ public class SystemUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (authorities == null) {
+            authorities = permissions.stream()
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toSet());
+        }
         return authorities;
     }
 
