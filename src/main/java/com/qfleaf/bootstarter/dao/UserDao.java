@@ -87,6 +87,10 @@ public class UserDao {
         return userCache.delete(loginTokenCacheKeyPrefix + token);
     }
 
+    public User findById(Long id) {
+        return userMapper.selectById(id);
+    }
+
     // region exist
     public ExistType exist(RegisterRequest register) {
         return existByUsername(register.getUsername()) ?
@@ -122,5 +126,9 @@ public class UserDao {
         Long defaultRoleId = Long.valueOf(defaultRoleIdString);
         int roleInsert = userMapper.insertDefaultRoles(entity.getId(), defaultRoleId);
         return userInsert > 0 && roleInsert > 0;
+    }
+
+    public boolean update(User entity) {
+        return userMapper.updateById(entity) > 0;
     }
 }

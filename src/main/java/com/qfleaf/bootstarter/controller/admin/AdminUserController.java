@@ -1,0 +1,34 @@
+package com.qfleaf.bootstarter.controller.admin;
+
+import com.qfleaf.bootstarter.common.ApiResponse;
+import com.qfleaf.bootstarter.model.request.admin.user.UserCreateRequest;
+import com.qfleaf.bootstarter.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/user/m")
+@PreAuthorize("hasAnyRole('ADMIN')")
+@Tag(name = "用户管理")
+@RequiredArgsConstructor
+public class AdminUserController {
+    private final UserService userService;
+
+    @Operation(summary = "创建用户")
+    @PostMapping
+    public ApiResponse<Boolean> createUser(@RequestBody UserCreateRequest userCreateRequest) {
+        boolean save = userService.createUser(userCreateRequest);
+        return ApiResponse.success(save);
+    }
+
+    @Operation(summary = "禁用用户")
+    @PostMapping("/disable/{id}")
+    public ApiResponse<Boolean> disableUser(@PathVariable("id") Long id) {
+        boolean disable = userService.disableUserById(id);
+        return ApiResponse.success(disable);
+    }
+
+}
