@@ -8,6 +8,9 @@ import com.qfleaf.bootstarter.dao.mapper.RoleMapper;
 import com.qfleaf.bootstarter.model.Role;
 import com.qfleaf.bootstarter.model.converter.RoleConverter;
 import com.qfleaf.bootstarter.model.request.admin.role.RoleCreateRequest;
+import com.qfleaf.bootstarter.model.request.admin.role.RolePageRequest;
+import com.qfleaf.bootstarter.model.response.PageResponse;
+import com.qfleaf.bootstarter.model.response.admin.role.RolePageResponse;
 import com.qfleaf.bootstarter.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,5 +29,10 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
         }
         Role entity = roleConverter.toEntity(roleCreateRequest);
         return roleDao.save(entity);
+    }
+
+    @Override
+    public PageResponse<RolePageResponse> mPage(RolePageRequest rolePageRequest) {
+        return roleDao.mPage(rolePageRequest);
     }
 }

@@ -1,9 +1,14 @@
 package com.qfleaf.bootstarter.dao;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.qfleaf.bootstarter.dao.mapper.RoleMapper;
 import com.qfleaf.bootstarter.model.Role;
 import com.qfleaf.bootstarter.model.request.admin.role.RoleCreateRequest;
+import com.qfleaf.bootstarter.model.request.admin.role.RolePageRequest;
+import com.qfleaf.bootstarter.model.response.PageResponse;
+import com.qfleaf.bootstarter.model.response.admin.role.RolePageResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -17,6 +22,18 @@ public class RoleDao {
 
     public List<Role> findAllByUserId(Long userId) {
         return roleMapper.selectRolesByUserId(userId);
+    }
+
+    public PageResponse<RolePageResponse> mPage(RolePageRequest rolePageRequest) {
+        IPage<RolePageResponse> page = new PageDTO<>(rolePageRequest.getCurrent(), rolePageRequest.getSize());
+        LambdaQueryWrapper<Role> wrapper = new LambdaQueryWrapper<>();
+        IPage<RolePageResponse> pageResult = roleMapper.selectPageVo(page, wrapper);
+        return PageResponse.<RolePageResponse>builder()
+                .records(pageResult.getRecords())
+                .total(pageResult.getTotal())
+                .page(pageResult.getCurrent())
+                .size(pageResult.getSize())
+                .build();
     }
 
     @Getter
