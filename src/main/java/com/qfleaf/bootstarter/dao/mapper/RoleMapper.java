@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.qfleaf.bootstarter.model.Role;
+import com.qfleaf.bootstarter.model.response.admin.role.RoleDetailsResponse;
 import com.qfleaf.bootstarter.model.response.admin.role.RolePageResponse;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -26,4 +27,11 @@ public interface RoleMapper extends BaseMapper<Role> {
             ${ew.customSqlSegment}
             """)
     IPage<RolePageResponse> selectPageVo(IPage<RolePageResponse> page, @Param("ew") LambdaQueryWrapper<Role> wrapper);
+
+    @Select("""
+            select *
+            from roles
+            where id = #{id}
+            """)
+    RoleDetailsResponse selectVoById(Long id);
 }

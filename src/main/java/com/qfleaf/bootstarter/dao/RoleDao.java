@@ -5,9 +5,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.qfleaf.bootstarter.dao.mapper.RoleMapper;
 import com.qfleaf.bootstarter.model.Role;
-import com.qfleaf.bootstarter.model.request.admin.role.RoleCreateRequest;
 import com.qfleaf.bootstarter.model.request.admin.role.RolePageRequest;
 import com.qfleaf.bootstarter.model.response.PageResponse;
+import com.qfleaf.bootstarter.model.response.admin.role.RoleDetailsResponse;
 import com.qfleaf.bootstarter.model.response.admin.role.RolePageResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +36,10 @@ public class RoleDao {
                 .build();
     }
 
+    public RoleDetailsResponse findRoleById(Long id) {
+        return roleMapper.selectVoById(id);
+    }
+
     @Getter
     @RequiredArgsConstructor
     public enum ExistType {
@@ -44,26 +48,35 @@ public class RoleDao {
         final String msg;
     }
 
-    public ExistType exist(RoleCreateRequest role) {
-        return existByName(role.getName()) ?
-                ExistType.NAME : existByCode(role.getCode()) ?
+    // region exist
+    public ExistType exist(Role role) {
+        Long id = role.getId();
+        return existByName(role.getName(), id) ?
+                ExistType.NAME : existByCode(role.getCode(), id) ?
                 ExistType.CODE : null;
     }
 
-    private boolean existByName(String roleName) {
+    private boolean existByName(String roleName, Long id) {
         LambdaQueryWrapper<Role> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Role::getName, roleName);
+        wrapper.eq(Role::getName, roleName)
+                .ne(Role::getId, id);
         return roleMapper.exists(wrapper);
     }
 
-    private boolean existByCode(String roleCode) {
+    private boolean existByCode(String roleCode, Long id) {
         LambdaQueryWrapper<Role> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Role::getName, roleCode);
+        wrapper.eq(Role::getName, roleCode)
+                .ne(Role::getId, id);
         return roleMapper.exists(wrapper);
     }
+    // endregion
 
     public boolean save(Role role) {
         return roleMapper.insert(role) > 0;
+    }
+
+    public boolean update(Role role) {
+        return roleMapper.updateById(role) > 0;
     }
 
 }

@@ -9,7 +9,9 @@ import com.qfleaf.bootstarter.model.Role;
 import com.qfleaf.bootstarter.model.converter.RoleConverter;
 import com.qfleaf.bootstarter.model.request.admin.role.RoleCreateRequest;
 import com.qfleaf.bootstarter.model.request.admin.role.RolePageRequest;
+import com.qfleaf.bootstarter.model.request.admin.role.RoleUpdateRequest;
 import com.qfleaf.bootstarter.model.response.PageResponse;
+import com.qfleaf.bootstarter.model.response.admin.role.RoleDetailsResponse;
 import com.qfleaf.bootstarter.model.response.admin.role.RolePageResponse;
 import com.qfleaf.bootstarter.service.RoleService;
 import lombok.RequiredArgsConstructor;
@@ -23,16 +25,30 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
 
     @Override
     public boolean createRole(RoleCreateRequest roleCreateRequest) {
-        RoleDao.ExistType exist = roleDao.exist(roleCreateRequest);
+        Role entity = roleConverter.toEntity(roleCreateRequest);
+
+        RoleDao.ExistType exist = roleDao.exist(entity);
         if (exist != null) {
             throw new BusinessException(ResultCode.CONFLICT.getCode(), exist.getMsg());
         }
-        Role entity = roleConverter.toEntity(roleCreateRequest);
+
         return roleDao.save(entity);
     }
 
     @Override
     public PageResponse<RolePageResponse> mPage(RolePageRequest rolePageRequest) {
         return roleDao.mPage(rolePageRequest);
+    }
+
+    @Override
+    public boolean updateRole(RoleUpdateRequest roleUpdateRequest) {
+        Role entity = roleConverter.toEntity(roleUpdateRequest);
+        roleDao.exist(entity);
+        return roleDao.update(entity);
+    }
+
+    @Override
+    public RoleDetailsResponse getRole(Long id) {
+        return roleDao.findRoleById(id);
     }
 }
