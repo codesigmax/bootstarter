@@ -8,6 +8,7 @@ import com.qfleaf.bootstarter.model.response.admin.user.UserPageResponse;
 import com.qfleaf.bootstarter.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,14 +24,14 @@ public class AdminUserController {
 
     @Operation(summary = "查询用户列表")
     @GetMapping("/list")
-    public ApiResponse<PageResponse<UserPageResponse>> list(@ParameterObject UserPageRequest userPageRequest) {
+    public ApiResponse<PageResponse<UserPageResponse>> list(@Valid @ParameterObject UserPageRequest userPageRequest) {
         PageResponse<UserPageResponse> pageResponse = userService.mPage(userPageRequest);
         return ApiResponse.success(pageResponse);
     }
 
     @Operation(summary = "创建用户")
     @PostMapping
-    public ApiResponse<Boolean> createUser(@RequestBody UserCreateRequest userCreateRequest) {
+    public ApiResponse<Boolean> createUser(@Valid @RequestBody UserCreateRequest userCreateRequest) {
         boolean save = userService.createUser(userCreateRequest);
         return ApiResponse.success(save);
     }

@@ -10,6 +10,7 @@ import com.qfleaf.bootstarter.model.response.admin.role.RolePageResponse;
 import com.qfleaf.bootstarter.service.RoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,14 +26,14 @@ public class AdminRoleController {
 
     @Operation(summary = "角色分页列表")
     @GetMapping("/list")
-    public ApiResponse<PageResponse<RolePageResponse>> list(@ParameterObject RolePageRequest rolePageRequest) {
+    public ApiResponse<PageResponse<RolePageResponse>> list(@Valid @ParameterObject RolePageRequest rolePageRequest) {
         PageResponse<RolePageResponse> pageResponse = roleService.mPage(rolePageRequest);
         return ApiResponse.success(pageResponse);
     }
 
     @Operation(summary = "创建角色")
     @PostMapping
-    public ApiResponse<Boolean> createRole(@RequestBody RoleCreateRequest roleCreateRequest) {
+    public ApiResponse<Boolean> createRole(@Valid @RequestBody RoleCreateRequest roleCreateRequest) {
         boolean create = roleService.createRole(roleCreateRequest);
         return ApiResponse.success(create);
     }
@@ -46,7 +47,7 @@ public class AdminRoleController {
 
     @Operation(summary = "修改角色")
     @PutMapping
-    public ApiResponse<Boolean> updateRole(@RequestBody RoleUpdateRequest roleUpdateRequest) {
+    public ApiResponse<Boolean> updateRole(@Valid @RequestBody RoleUpdateRequest roleUpdateRequest) {
         boolean update = roleService.updateRole(roleUpdateRequest);
         return ApiResponse.success(update);
     }
